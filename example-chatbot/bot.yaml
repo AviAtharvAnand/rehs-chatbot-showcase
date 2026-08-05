@@ -1,0 +1,31 @@
+# EXAMPLE ENTRY, not a real chatbot, not a real student.
+# It exists only to show the FORMAT: which files go where, and what each field is.
+# It is deliberately bare. Your entry should be better than this one.
+#
+# To start yours, copy the template (not this folder):
+#     cp -r _pages/template my-chatbot
+example: true
+
+name: Example Chatbot
+tagline: A bare-bones entry showing where each file goes.
+
+kind: solo
+year: 2026
+
+authors:
+  - name: Example Student
+    github: octocat
+    role: wrote the app and the deployment
+    learned: >
+      Replace this with what you actually learned. Two or three sentences is plenty.
+
+tech:
+  - Python
+  - Streamlit
+  - Kubernetes
+
+highlights:
+  - Replace these bullets with the decisions you made and what they got you.
+  - Anything you tried that did not work belongs here too.
+
+screenshot: screenshot.png

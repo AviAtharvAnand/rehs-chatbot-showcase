@@ -1,0 +1,134 @@
+{% extends "base.html.j2" %}
+
+{% block content %}
+<section class="hero">
+  <div class="wrap hero-inner">
+    <div class="hero-text">
+      <p class="eyebrow">
+        SDSC <a href="https://education.sdsc.edu/studenttech/rehs/">Research Experience for High School Students</a>{% if stats.year_label %} &middot; {{ stats.year_label }}{% endif %}
+      </p>
+      <h1>Chatbots built by high schoolers, deployed on the <span class="hl">National Research Platform</span>.</h1>
+      <p class="lede">
+        Each one was designed, written and deployed by a student over a single summer, and
+        each ran as a real Kubernetes workload on <a href="https://nrp.ai">Nautilus</a>, the
+        National Research Platform's cluster, on hardware shared by more than seventy
+        institutions. Open any of them to see how it was made and who made it.
+      </p>
+      <div class="card-links">
+        <a class="btn btn-primary" href="#gallery">See the chatbots</a>
+        {% if stats.students %}<a class="btn" href="#people">Meet the builders</a>{% endif %}
+      </div>
+
+      <p class="ran-on">
+        <span>Ran on</span>
+        <a href="https://nrp.ai">
+          <img class="nrp-mark only-light" src="{{ root }}assets/nrp-logo.png" alt="National Research Platform">
+          <img class="nrp-mark only-dark" src="{{ root }}assets/nrp-logo-white.png" alt="National Research Platform">
+        </a>
+      </p>
+    </div>
+
+    {% set featured = bots | selectattr('slug', 'in', shots) | list %}
+    {% if featured %}
+    <div class="hero-figure" aria-hidden="true">
+      {% for bot in featured[:4] %}
+      <a class="hero-shot" href="{{ root }}bots/{{ bot.slug }}/" tabindex="-1">
+        <img src="{{ root }}{{ shots[bot.slug] }}" alt="">
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{% if stats.bots %}
+<section class="statband">
+  <div class="wrap statband-inner">
+    <div class="stat">
+      <strong>{{ stats.bots }}</strong>
+      <span>chatbot{{ '' if stats.bots == 1 else 's' }} in the collection</span>
+    </div>
+    <div class="stat">
+      <strong>{{ stats.students }}</strong>
+      <span>student builder{{ '' if stats.students == 1 else 's' }}</span>
+    </div>
+    <div class="stat">
+      <strong>{{ stats.deployed }}</strong>
+      <span>deployed to the cluster</span>
+    </div>
+    <div class="stat">
+      <strong>8</strong>
+      <span>weeks, start to finish</span>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section id="gallery" class="wrap section">
+  <h2 class="category">Chatbots</h2>
+  {% if bots %}
+  <div class="gallery">
+    {% for bot in bots %}
+    <article class="tile">
+      <a class="tile-frame" href="{{ root }}bots/{{ bot.slug }}/">
+        {% if shots.get(bot.slug) %}
+        <img src="{{ root }}{{ shots[bot.slug] }}" alt="{{ bot.name }}" loading="lazy">
+        {% else %}
+        <span class="tile-empty">no screenshot</span>
+        {% endif %}
+      </a>
+      <div class="tile-body">
+        {% set bits = [] %}
+        {% if bot.year %}{% set _ = bits.append('REHS ' ~ bot.year) %}{% endif %}
+        {% if bot.kind == 'team' %}{% set _ = bits.append('team') %}{% endif %}
+        {% if bot.kinds %}{% set _ = bits.append('Kubernetes') %}{% endif %}
+        {% if bot.is_example %}{% set _ = bits.append('<span class="tag">example</span>') %}{% endif %}
+        <p class="meta-line">{{ bits | join(' &middot; ') | safe }}</p>
+        <h3><a href="{{ root }}bots/{{ bot.slug }}/">{{ bot.name }}</a></h3>
+        <p class="tile-tagline">{{ bot.tagline }}</p>
+        {% if bot.tech %}
+        <p class="chips tile-chips">{% for t in bot.tech[:4] %}<span class="chip">{{ t }}</span>{% endfor %}</p>
+        {% endif %}
+        <p class="tile-by">
+          Built by
+          {% for a in bot.authors %}<a href="{{ root }}students/{{ a.github }}/">{{ a.name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}
+        </p>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty">
+    <p class="empty-big">The collection fills up as the students send their work in.</p>
+    <p class="muted">
+      Each chatbot is one folder in this repository: the code, the Kubernetes manifests
+      that ran it, a screenshot, and a page written by the student who built it.
+    </p>
+    <p>
+      <a class="btn btn-primary" href="{{ repo_url_root }}/tree/main/example-chatbot">See how an entry is put together</a>
+    </p>
+  </div>
+  {% endif %}
+</section>
+
+{% if stats.students %}
+<section id="people" class="wrap section">
+  <h2 class="category">Builders</h2>
+  <p class="section-lede">
+    Every student has a page of their own: what they built, what they owned, and what
+    they took away from it.
+  </p>
+  <div class="people-grid">
+    {% for key, s in students.items() %}
+    <a class="person" href="{{ root }}students/{{ s.handle }}/">
+      <span class="person-avatar" aria-hidden="true">{{ s.name[0] | upper }}</span>
+      <span class="person-text">
+        <strong>{{ s.name }}</strong>
+        <small>{{ s.contributions[0].role }}</small>
+      </span>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

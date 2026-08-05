@@ -1,0 +1,48 @@
+# Your entry in the showcase. Everything on your public pages comes from this file.
+# Field reference: ../docs/ENTRY-FORMAT.md      A finished one: ../../example-chatbot/
+# Check your work:  make check
+
+name: Your Chatbot Name
+# One sentence, no jargon. Someone who's never heard of NRP should get it.
+tagline: What your chatbot does, in one plain sentence.
+
+kind: solo            # solo | pair | team
+year: 2026
+
+authors:
+  - name: Your Name
+    github: your-github-username
+    role: what you actually built (e.g. "ingest and chunking, plus the deployment")
+    learned: >
+      Two or three honest sentences about what this taught you. The un-polished
+      version is the good version. This shows up on your own page.
+    # grad_year: 2027
+
+tech:
+  - Streamlit
+  - ChromaDB
+  - NRP LLM (gpt-oss)
+  - Kubernetes
+  - Python
+
+# 2-5 bullets. The interesting DECISIONS, not a feature list.
+highlights:
+  - Something you did differently, and what it bought you.
+  - A problem you hit and how you solved it.
+
+# Only if you measured it. Report what you actually got.
+# eval:
+#   retrieval_hit: 17
+#   answer_ok: 15
+#   total: 20
+#   notes: 20 questions, run at temperature 0.
+
+screenshot: screenshot.png
+
+# All optional, delete what you don't have.
+# links:
+#   repo_url: https://github.com/your-username/your-other-repo
+#   demo_video: https://youtu.be/xxxxxxxx
+
+# Note: you do NOT describe your Kubernetes setup here. Put the manifests in k8s/ and
+# your page reads them directly, so what it shows is always what you really deployed.

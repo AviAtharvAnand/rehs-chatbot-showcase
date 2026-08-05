@@ -1,0 +1,84 @@
+{% extends "base.html.j2" %}
+
+{% block content %}
+<article class="wrap page">
+  <p class="crumb"><a href="{{ root }}">Back to all chatbots</a></p>
+
+  <header class="page-head person-head">
+    <span class="person-avatar-lg" aria-hidden="true">{{ student.name[0] | upper }}</span>
+    <div>
+      <h1>{{ student.name }}</h1>
+      <p class="lede">
+        Built AI chatbots on the <a href="https://nrp.ai">National Research Platform</a> in
+        the <a href="https://education.sdsc.edu/studenttech/rehs/">SDSC REHS</a>
+        program{% if student.grad_year %}, class of {{ student.grad_year }}{% endif %}.
+      </p>
+      <div class="card-links">
+        <a class="btn" href="https://github.com/{{ student.handle }}">@{{ student.handle }} on GitHub</a>
+        {% for c in student.contributions %}
+        <a class="btn btn-primary" href="{{ root }}bots/{{ c.bot.slug }}/">{{ c.bot.name }}</a>
+        {% endfor %}
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <h2 class="category">What {{ student.name.split()[0] }} built</h2>
+    {% for c in student.contributions %}
+    <div class="contribution">
+      {% if shots.get(c.bot.slug) %}
+      <a class="contribution-shot" href="{{ root }}bots/{{ c.bot.slug }}/">
+        <img src="{{ root }}{{ shots[c.bot.slug] }}" alt="Screenshot of {{ c.bot.name }}" loading="lazy">
+      </a>
+      {% endif %}
+      <div class="contribution-body">
+        {% set bits = [] %}
+        {% if c.bot.year %}{% set _ = bits.append('REHS ' ~ c.bot.year) %}{% endif %}
+        {% if c.bot.kinds %}{% set _ = bits.append('ran on Kubernetes') %}{% endif %}
+        <p class="meta-line">{{ bits | join(' &middot; ') | safe }}</p>
+        <h3><a href="{{ root }}bots/{{ c.bot.slug }}/">{{ c.bot.name }}</a></h3>
+        <p class="tagline">{{ c.bot.tagline }}</p>
+        <p class="role-line"><strong>Their part:</strong> {{ c.role }}</p>
+        <p class="chips">{% for t in c.bot.tech %}<span class="chip">{{ t }}</span>{% endfor %}</p>
+        <div class="card-links">
+          <a class="btn" href="{{ root }}bots/{{ c.bot.slug }}/">Full write-up</a>
+          <a class="btn btn-quiet" href="{{ repo }}/tree/main/{{ c.bot.slug }}">Code &amp; manifests</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </section>
+
+  {% set notes = student.contributions | selectattr('learned') | list %}
+  {% if notes %}
+  <section class="learned">
+    <h2 class="category">In their words</h2>
+    {% for c in notes %}
+    <blockquote>
+      <p>{{ c.learned }}</p>
+      <cite>on building {{ c.bot.name }}</cite>
+    </blockquote>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  <section class="context">
+    <h2 class="category">About the program</h2>
+    <p>
+      <a href="https://education.sdsc.edu/studenttech/rehs/">Research Experience for High
+      School Students</a> (REHS) at the
+      <a href="https://www.sdsc.edu/">San Diego Supercomputer Center</a> is an eight-week
+      summer program. In this
+      track, students learn Python, git and Kubernetes, then build a
+      retrieval-augmented-generation chatbot: scraping real documentation, embedding it
+      into a vector database, retrieving passages for each question, and prompting an LLM
+      to answer with citations. In the final weeks they containerize their bot and deploy
+      it to the <a href="https://nrp.ai">National Research Platform</a>&rsquo;s Nautilus
+      Kubernetes cluster, writing the Deployment, Service, Ingress and storage
+      manifests that run it.
+    </p>
+  </section>
+
+  <p class="crumb bottom"><a href="{{ root }}">Back to all chatbots</a></p>
+</article>
+{% endblock %}

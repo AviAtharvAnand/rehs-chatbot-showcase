@@ -1,0 +1,12 @@
+# Gives the pod a stable address inside the cluster: port 80 -> the app's port 8501.
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-chatbot
+  namespace: rehs-2026-chatbot
+spec:
+  selector: {app: example-chatbot}
+  ports:
+  - port: 80
+    targetPort: 8501
+  type: ClusterIP

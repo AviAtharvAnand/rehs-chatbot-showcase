@@ -1,0 +1,5 @@
+# Everything this repo needs. Nothing here runs a chatbot — this repo only
+# validates entries and builds a static site.
+PyYAML==6.0.2
+Jinja2==3.1.4
+Markdown==3.7

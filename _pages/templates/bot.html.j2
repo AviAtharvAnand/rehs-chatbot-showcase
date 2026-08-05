@@ -1,0 +1,160 @@
+{% extends "base.html.j2" %}
+
+{% block content %}
+<article class="wrap page">
+  <p class="crumb"><a href="{{ root }}">Back to all chatbots</a></p>
+
+  {% if bot.is_example %}
+  <div class="notice">
+    <strong>This is an example entry.</strong> It isn&rsquo;t a real chatbot and
+    &ldquo;Example Student&rdquo; isn&rsquo;t a real person, it&rsquo;s here to
+    show what a finished entry looks like.
+  </div>
+  {% endif %}
+
+  <header class="page-head">
+    <div class="card-tags">
+      {% set bits = [] %}
+      {% if bot.year %}{% set _ = bits.append('REHS ' ~ bot.year) %}{% endif %}
+      {% if bot.kind == 'team' %}{% set _ = bits.append('team project') %}{% endif %}
+      {% if bot.kinds %}{% set _ = bits.append('ran on Kubernetes') %}{% endif %}
+      <p class="meta-line">{{ bits | join(' &middot; ') | safe }}</p>
+    </div>
+    <h1>{{ bot.name }}</h1>
+    <p class="lede">{{ bot.tagline }}</p>
+    <div class="card-links">
+      <a class="btn btn-primary" href="{{ source_url }}">Read the code</a>
+      {% if bot.repo_url %}<a class="btn" href="{{ bot.repo_url }}">Original repo</a>{% endif %}
+      {% if bot.links.get('demo_video') %}<a class="btn" href="{{ bot.links.get('demo_video') }}">Demo video</a>{% endif %}
+      {% if bot.links.get('slides') %}<a class="btn btn-quiet" href="{{ bot.links.get('slides') }}">Slides</a>{% endif %}
+    </div>
+  </header>
+
+  {% if shot %}
+  <figure class="shot-full">
+    <img src="{{ root }}{{ shot }}" alt="{{ bot.name }} answering a question">
+    <figcaption class="shot-caption">{{ bot.name }}, answering a question</figcaption>
+  </figure>
+  {% endif %}
+
+  <section class="builders">
+    <h2 class="category">Built by</h2>
+    <div class="builder-grid">
+      {% for a in bot.authors %}
+      <div class="builder">
+        <span class="person-avatar" aria-hidden="true">{{ a.name[0] | upper }}</span>
+        <div>
+          <a class="builder-name" href="{{ root }}students/{{ a.github }}/">{{ a.name }}</a>
+          <p class="builder-role">{{ a.role }}</p>
+          <p class="muted small">
+            <a href="https://github.com/{{ a.github }}">@{{ a.github }}</a>
+            {% if a.get('grad_year') %} &middot; class of {{ a.get('grad_year') }}{% endif %}
+          </p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <h2 class="category">Decisions</h2>
+  <div class="two-col">
+    <section>
+      <ol class="highlights">
+        {% for h in bot.highlights %}
+        <li>{{ h }}</li>
+        {% endfor %}
+      </ol>
+    </section>
+
+    <aside class="facts">
+      <h2>Facts</h2>
+      <dl>
+        <dt>Built with</dt>
+        <dd class="chips">{% for t in bot.tech %}<span class="chip">{{ t }}</span>{% endfor %}</dd>
+        {% if bot.eval and bot.eval.get('total') %}
+        <dt>Evaluation</dt>
+        <dd>
+          {% if bot.eval.get('retrieval_hit') is not none %}
+          <div class="bar-row">
+            <span class="bar-label">Retrieved the right doc</span>
+            <span class="bar"><span class="bar-fill" style="width: {{ (100 * bot.eval.get('retrieval_hit') / bot.eval.get('total')) | round | int }}%"></span></span>
+            <strong>{{ bot.eval.get('retrieval_hit') }}/{{ bot.eval.get('total') }}</strong>
+          </div>
+          {% endif %}
+          {% if bot.eval.get('answer_ok') is not none %}
+          <div class="bar-row">
+            <span class="bar-label">Answer judged acceptable</span>
+            <span class="bar"><span class="bar-fill" style="width: {{ (100 * bot.eval.get('answer_ok') / bot.eval.get('total')) | round | int }}%"></span></span>
+            <strong>{{ bot.eval.get('answer_ok') }}/{{ bot.eval.get('total') }}</strong>
+          </div>
+          {% endif %}
+          {% if bot.eval.get('notes') %}<p class="muted small">{{ bot.eval.get('notes') }}</p>{% endif %}
+        </dd>
+        {% endif %}
+        {% if bot.namespace %}
+        <dt>Cluster namespace</dt>
+        <dd><code>{{ bot.namespace }}</code>
+          <p class="muted small">on Nautilus, the National Research Platform's Kubernetes cluster</p></dd>
+        {% endif %}
+        {% if bot.src_files %}
+        <dt>Source</dt>
+        <dd><a href="{{ source_url }}">{{ bot.src_files | length }} file{{ '' if bot.src_files | length == 1 else 's' }} in <code>src/</code></a></dd>
+        {% endif %}
+      </dl>
+    </aside>
+  </div>
+
+  {% if bot.resources %}
+  <section class="deployment">
+    <h2 class="category">On the cluster</h2>
+    <p class="section-lede">
+      This was never a script on a laptop. It ran as a container on
+      <a href="https://nrp.ai">Nautilus</a>, the National Research Platform's Kubernetes
+      cluster, described by the manifests in this folder, the same kind of configuration
+      that runs production software. What you see below is read straight out of those
+      files.
+    </p>
+
+    <div class="k8s-chain">
+      {% for item in bot.resources %}
+      <div class="k8s-node{% if item.kind in ('Deployment', 'StatefulSet') %} k8s-node-main{% endif %}">
+        <span class="k8s-kind">{{ item.kind }}</span>
+        <strong>{{ item.name or item.file }}</strong>
+        <span class="k8s-note">
+          {% if item.kind == 'Ingress' %}
+            {% if item.get('host') %}public hostname <code>{{ item.host }}</code> &middot; {% endif %}HTTPS with an automatically issued certificate
+          {% elif item.kind == 'Service' %}
+            routes traffic inside the cluster to the pod
+          {% elif item.kind in ('Deployment', 'StatefulSet') %}
+            {{ item.get('replicas', 1) }} pod{{ '' if item.get('replicas', 1) == 1 else 's' }} running the chatbot container
+          {% elif item.kind == 'PersistentVolumeClaim' %}
+            {{ item.get('storage', 'persistent storage') }} for the vector database, survives restarts
+          {% elif item.kind == 'ConfigMap' %}
+            non-secret settings: model name, API address
+          {% elif item.kind == 'Job' %}
+            a one-off task, such as loading the documentation into the database
+          {% else %}
+            defined in <code>{{ item.file }}</code>
+          {% endif %}
+        </span>
+        <span class="k8s-file"><a href="{{ k8s_blob }}/{{ item.file }}">{{ item.file }}</a></span>
+      </div>
+      {% endfor %}
+    </div>
+
+    <p class="muted small">
+      The LLM token was never in any of these files, it lived in a Kubernetes
+      Secret created directly on the cluster, which is why you won&rsquo;t find it here.
+    </p>
+  </section>
+  {% endif %}
+
+  {% if body_html %}
+  <section class="prose">
+    {{ body_html | safe }}
+  </section>
+  {% endif %}
+
+  <p class="crumb bottom"><a href="{{ root }}">Back to all chatbots</a></p>
+</article>
+{% endblock %}

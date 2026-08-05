@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ page_title }}</title>
+<meta name="description" content="{{ page_description }}">
+<link rel="stylesheet" href="{{ root }}assets/style.css">
+<meta name="theme-color" content="#0c1b31">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{ page_title }}">
+<meta property="og:description" content="{{ page_description }}">
+{% if og_image %}
+<meta property="og:image" content="{{ base_url }}{{ og_image }}">
+<meta name="twitter:card" content="summary_large_image">
+{% endif %}
+<script>
+  // Apply the saved theme before first paint so the page never flashes.
+  (function () {
+    try {
+      var saved = localStorage.getItem("theme");
+      if (saved === "light" || saved === "dark") {
+        document.documentElement.setAttribute("data-theme", saved);
+      }
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="{{ root or './' }}">
+      <img class="logo only-light" src="{{ root }}assets/sdsc-logo.svg" alt="San Diego Supercomputer Center">
+      <img class="logo only-dark" src="{{ root }}assets/sdsc-logo-white.svg" alt="San Diego Supercomputer Center">
+      <span class="brand-text"><strong>REHS</strong> Chatbot Showcase</span>
+    </a>
+    <div class="header-right">
+      <nav class="site-nav">
+        <a href="{{ root or './' }}#gallery">Chatbots</a>
+        {% if stats.students %}<a href="{{ root or './' }}#people">Builders</a>{% endif %}
+        <a href="https://education.sdsc.edu/studenttech/rehs/">REHS</a>
+        <a href="{{ repo_url_root }}">Source</a>
+      </nav>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch between light and dark">
+        <span data-theme-label>Theme</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+{% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logos">
+        <a href="https://www.sdsc.edu/">
+          <img class="logo only-light" src="{{ root }}assets/sdsc-logo.svg" alt="San Diego Supercomputer Center">
+          <img class="logo only-dark" src="{{ root }}assets/sdsc-logo-white.svg" alt="San Diego Supercomputer Center">
+        </a>
+        <a href="https://nrp.ai">
+          <img class="logo logo-nrp only-light" src="{{ root }}assets/nrp-logo.png" alt="National Research Platform">
+          <img class="logo logo-nrp only-dark" src="{{ root }}assets/nrp-logo-white.png" alt="National Research Platform">
+        </a>
+      </div>
+      <p class="muted small">
+        Chatbots built by high school students in the
+        <a href="https://education.sdsc.edu/studenttech/rehs/">Research Experience for High
+        School Students</a> program, and deployed on the
+        <a href="https://nrp.ai">National Research Platform</a>.
+      </p>
+    </div>
+    <div class="footer-links">
+      <p class="footer-heading">The program</p>
+      <p><a href="https://education.sdsc.edu/studenttech/rehs/">REHS at SDSC</a></p>
+      <p><a href="https://www.sdsc.edu/">San Diego Supercomputer Center</a></p>
+      <p><a href="https://nrp.ai">National Research Platform</a></p>
+    </div>
+    <div class="footer-links">
+      <p class="footer-heading">This site</p>
+      <p><a href="{{ repo_url_root }}">Source on GitHub</a></p>
+      <p><a href="{{ repo_url_root }}/tree/main/example-chatbot">Example entry</a></p>
+      <p class="muted">Last built {{ built_on }}</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var button = document.querySelector("[data-theme-toggle]");
+    var label = document.querySelector("[data-theme-label]");
+    if (!button) return;
+
+    var media = window.matchMedia("(prefers-color-scheme: dark)");
+
+    function current() {
+      var set = document.documentElement.getAttribute("data-theme");
+      if (set) return set;
+      return media.matches ? "dark" : "light";
+    }
+
+    function render() {
+      label.textContent = current() === "dark" ? "Light" : "Dark";
+    }
+
+    button.addEventListener("click", function () {
+      var next = current() === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      try { localStorage.setItem("theme", next); } catch (e) {}
+      render();
+    });
+
+    media.addEventListener("change", render);
+    render();
+  })();
+</script>
+</body>
+</html>

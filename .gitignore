@@ -1,0 +1,18 @@
+# Generated site — built by CI, never committed
+site/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Secrets — never commit
+.env
+*.pem
+*.key
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
