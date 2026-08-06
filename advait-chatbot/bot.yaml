@@ -1,28 +1,45 @@
-name: Advait's NRP Chatbot
-tagline: 
+name: Advait's NRP Documentation Chatbot
+
+tagline: >
+  A retrieval-augmented AI assistant that answers questions about the National
+  Research Platform using official documentation sources.
 
 kind: solo
 year: 2026
 
 authors:
-  - name: Advait YourLastName
-    github: your-github-username
-    role: Developed RAG pipeline, document chunking, and deployed Kubernetes manifests on NRP Nautilus.
+  - name: Advait Choksi
+    github: advaitc31
+    role: >
+      Built the RAG pipeline, Streamlit interface, embedding workflow,
+      ChromaDB vector search system, and Kubernetes deployment.
     learned: >
-      Write 2-3 honest sentences about what you learned this summer, 
-      challenges with vector databases or Kubernetes, or debugging experience.
+      This project taught me not only a lot of about python programming with AI and LLMS, but also how to move an AI application from a local Python
+      script into a production-style Kubernetes workload. I learned about
+      retrieval quality, chunking strategies, embeddings, and deployment techniques.
 
-tech: [Streamlit, ChromaDB, NRP LLM, Kubernetes, Python]
+tech:
+  - Streamlit
+  - Python
+  - ChromaDB
+  - Retrieval-Augmented Generation (RAG)
+  - qwen3-embedding
+  - NRP LLM API
+  - Kubernetes
+  - Docker
 
 highlights:
-  - Mention a specific choice you made (e.g., chunking strategy, embedding model choice).
-  - A technical problem you hit during deployment and how you resolved it.
-
-# Delete the eval section below if you didn't record exact stats
-eval:
-  retrieval_hit: 17
-  answer_ok: 15
-  total: 20
-  notes: Tested on evaluation questions.
+  - >
+    Built a complete RAG pipeline that automatically scrapes NRP documentation,
+    splits it into searchable chunks, creates embeddings, and retrieves relevant
+    documentation before generating answers.
+  - >
+    Designed a Kubernetes deployment with persistent storage for the vector
+    database, ConfigMaps for application configuration, and Secrets for secure
+    API token management.
+  - >
+    Improved answer reliability by adding source retrieval, configurable
+    response styles, adjustable retrieval depth, and streaming token-by-token
+    generation.
 
 screenshot: screenshot.png
