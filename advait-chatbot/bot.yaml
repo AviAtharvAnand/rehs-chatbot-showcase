@@ -1,1 +1,28 @@
+name: Advait's NRP Chatbot
+tagline: 
 
+kind: solo
+year: 2026
+
+authors:
+  - name: Advait YourLastName
+    github: your-github-username
+    role: Developed RAG pipeline, document chunking, and deployed Kubernetes manifests on NRP Nautilus.
+    learned: >
+      Write 2-3 honest sentences about what you learned this summer, 
+      challenges with vector databases or Kubernetes, or debugging experience.
+
+tech: [Streamlit, ChromaDB, NRP LLM, Kubernetes, Python]
+
+highlights:
+  - Mention a specific choice you made (e.g., chunking strategy, embedding model choice).
+  - A technical problem you hit during deployment and how you resolved it.
+
+# Delete the eval section below if you didn't record exact stats
+eval:
+  retrieval_hit: 17
+  answer_ok: 15
+  total: 20
+  notes: Tested on evaluation questions.
+
+screenshot: screenshot.png
