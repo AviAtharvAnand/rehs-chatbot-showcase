@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kaden-wu-chatbot
+  namespace: rehs-2026-chatbot
+spec:
+  replicas: 2                   
+  selector:
+    matchLabels:
+      app: kaden-wu-chatbot
+  template:
+    metadata:
+      labels:
+        app: kaden-wu-chatbot
+    spec:
+      containers:
+      - name: kaden-wu-chatbot
+        image: mooncaller27/kaden-wu-chatbot:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: NRP_LLM_TOKEN
+          value: "gDU89bvLldR5FjPqJCs0YR6dTy4jaoRu"
+
+        - name: NRP_LLM_BASE_URL
+          value: "https://ellm.nrp-nautilus.io/v1"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
