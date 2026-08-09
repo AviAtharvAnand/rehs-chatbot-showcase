@@ -1,0 +1,30 @@
+id: glm-5
+displayName: glm-5
+huggingfaceId: nvidia/GLM-5.2-NVFP4
+huggingfaceUrl: https://huggingface.co/nvidia/GLM-5.2-NVFP4
+status: evaluating
+badges:
+  tool: true
+  reasoning: true
+  multimodal: false
+  research: false
+contextTokens: 524288
+parameters: 744B
+quantization: NVFP4 (NVIDIA)
+disableReasoningSnippet: 'extra_body={"chat_template_kwargs": {"enable_thinking": false}}'
+preserveReasoningSnippet: 'extra_body={"chat_template_kwargs": {"enable_thinking": true, "clear_thinking": false}}'
+toolCallingDocsUrl: https://recipes.vllm.ai/zai-org/GLM-5.2
+sortOrder: 70
+summary: Zhipu's 744B frontier coding model with NVIDIA NVFP4 weights.
+strengths:
+  - Strong agentic coding — competitive with commercial frontier models
+  - NVFP4 quantization preserves quality within limited VRAM
+  - ~500K context covers large codebases
+weaknesses:
+  - Text-only — no multimodal input
+  - Evaluating — configuration may shift
+  - Reasoning on by default; adds latency for simple tasks
+bestFor:
+  - Agentic coding workflows
+  - Long-form reasoning and text tasks
+  - Tool-using agents

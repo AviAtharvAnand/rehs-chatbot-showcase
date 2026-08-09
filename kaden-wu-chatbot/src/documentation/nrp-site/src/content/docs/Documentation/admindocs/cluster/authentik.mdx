@@ -1,0 +1,104 @@
+---
+title: Authentik
+description: Authentik configuration and management.
+---
+
+:::caution
+This page contains administrative documentation intended for cluster administrators and operators. This content may not be relevant for regular users.
+:::
+
+:::danger
+Whenever creating a new application in Authentik, always add Expression Policy `[IMP] NSF Policy`, unless there's a more restrictive policy already implemented for provider.
+:::
+
+## Overview
+
+Follow these steps to configure an OAuth Client via Authentik.
+
+## Prerequisites
+
+1. You must be an **admin** on [Authentik](https://authentik.nrp-nautlus.io).
+
+## Step 1: Create an Application
+
+- Navigate to **Applications** in Authentik.
+- Create a new `Application`.
+- Each `Application` will create a corresponding `Provider`.
+- Choose `OAuth2` as the `Provider` type.
+
+### Authentication Flow
+
+- Select: `nautilus-user-authentication-flow` if the application is for NRP users, or `default-authentication-flow` if the application is for system/dev/admins.
+- Make the client **confidential**.
+- Retrieve the `Client ID` and `Client Secret` (needed for integration).
+
+:::note
+  `default-authentication-flow` allows for fallback password login, while `nautilus-user-authentication-flow` doesn't, which is more suitable for anything user-facing since users can login exclusively through CILogon.
+:::
+
+
+### Authorization Flow
+
+- Select: `nrp-authorization-with-aup-consent`.
+- Make the client **confidential**.
+- Retrieve the `Client ID` and `Client Secret` (needed for integration).
+
+:::note
+  `nrp-authorization-with-aup-consent` is the flow that prompts users for AUP consent if not provided before.
+:::
+
+
+## Step 2: Configure JupyterHub (Example)
+
+Below is a sample JupyterHub configuration using Authentik as the OAuth provider:
+
+```yaml
+  hub:
+    config:
+      OAuthenticator:
+        login_service: "Authentik" # This is what shows on JH UI
+        oauth_callback_url: "https://XYZ.nrp-nautilus.io/hub/oauth_callback" # This is inputted by user
+        authorize_url: "https://authentik.nrp-nautilus.io/application/o/authorize/" # This is provided by Authentik
+        token_url: "https://authentik.nrp-nautilus.io/application/o/token/"  # This is provided by Authentik
+        userdata_url: "https://authentik.nrp-nautilus.io/application/o/userinfo/"  # This is provided by Authentik
+        client_id: "XYZ"  # This is provided by Authentik
+        client_secret: "XYZ"  # This is provided by Authentik
+        username_claim: "email"
+        allow_all: true
+      JupyterHub:
+        admin_access: true
+        authenticator_class: oauthenticator.generic.GenericOAuthenticator
+
+```
+
+## Step 3: Configure Bindings (Filters & Policies)
+
+- In **Configure Bindings**, define filtering rules (`blacklists`, `whitelists`, `user scopes`).
+- Authentik uses **Expression Policies** (Python-based) to control access.
+
+More details on Expression Policies: [Authentik Docs](https://docs.goauthentik.io/docs/customize/policies/expression)
+
+:::note
+  There's no need to add banned users to expression policies. They are banned by default.
+:::
+
+For now, finish creating the **Application** without attaching a policy. Next, you'll create the policy and bind it.
+
+## Step 4: Create an Expression Policy (Optional)
+
+- Navigate to **Customization → Policies → Create → Expression Policy**.
+- In the **Expression** field, enter your filtering logic.
+  
+:::note
+  If it's a public service, there is a standard expression policy that enforces users be part of at least one Authentik group and/or Kubernetes namespace.
+:::
+
+
+## Step 5: Bind the Policy to Your Application (Optional)
+
+- Go back to your **Application**.
+- Open **Policy / Group / User Bindings**.
+- Bind the **Expression Policy** you just created.
+- In the **Application Overview**, use the **Test** button to verify user access.
+
+---
