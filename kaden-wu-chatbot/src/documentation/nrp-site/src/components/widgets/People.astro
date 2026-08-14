@@ -1,0 +1,48 @@
+---
+import type { People as Props } from '~/types';
+import { twMerge } from 'tailwind-merge';
+
+import Image from '~/components/common/Image.astro';
+import Headline from '~/components/ui/Headline.astro';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+const {
+  title = '',
+  subtitle = '',
+  tagline = '',
+  people = [],
+  id,
+  isDark = false,
+  classes = {},
+  bg = await Astro.slots.render('bg'),
+} = Astro.props;
+---
+
+<WidgetWrapper id={id} isDark={isDark} containerClass={`max-w-6xl mx-auto ${classes?.container ?? ''}`} bg={bg}>
+  <Headline title={title} subtitle={subtitle} tagline={tagline} />
+
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-10">
+    {
+      people &&
+        people.map(
+          (person) =>
+            person && (
+              <div class="flex flex-col items-center text-center">
+                <Image
+                  src={person.img}
+                  alt={person.name}
+                  class={twMerge(
+                    'h-28 w-28 object-cover object-center rounded-full shadow-md ring-1 ring-black/5 transition-transform duration-200 hover:scale-105',
+                    person.imgClass
+                  )}
+                  width={170}
+                  height={170}
+                  layout="fixed"
+                />
+                <h3 class="mt-4 text-base font-semibold leading-tight">{person.name}</h3>
+                <p class="mt-1 text-sm text-muted leading-snug">{person.title}</p>
+              </div>
+            )
+        )
+    }
+  </div>
+</WidgetWrapper>

@@ -1,0 +1,34 @@
+---
+title: Removing a node
+description: Removing a node from the cluster
+---
+
+:::caution
+This page contains administrative documentation intended for cluster administrators and operators. This content may not be relevant for regular users.
+:::
+
+
+
+
+import { Steps } from '@astrojs/starlight/components';
+
+:::note
+These instructions are for nodes being temporary or permanently removed from the cluster.
+:::
+
+<Steps>
+
+    1. Drain the node. **Check all pods except the system ones are gone**.
+
+    2. Check that all storage volumes are successfully unmounted from the node (both `lsblk` devices and k8s volumeattachments)
+
+    3. Check **in linstor controller pod** that [no linstor volumes exist on the node (even diskless ones)](/documentation/admindocs/storage/linstor/#cleaning-up-a-node).
+
+    4. Do `kubeadm reset` on the node
+
+    5. Delete the node from the k8s cluster
+
+    6. Delete the node from ansible inventory
+
+    7. Add a note to netbox
+</Steps>

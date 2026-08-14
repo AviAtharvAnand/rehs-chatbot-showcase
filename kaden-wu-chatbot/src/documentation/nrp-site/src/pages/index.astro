@@ -1,0 +1,341 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+
+import Hero from '~/components/widgets/Hero.astro'
+import AnnouncementBar from '~/components/common/AnnouncementBar.astro';
+import Image from '~/components/common/Image.astro';
+import Note from '~/components/widgets/Note.astro';
+import MatrixFeed from '~/components/widgets/MatrixFeed.astro';
+import Features from '~/components/widgets/Features.astro';
+import BlogLatestPosts from '~/components/widgets/BlogLatestPosts.astro';
+import FAQs from '~/components/widgets/FAQs.astro';
+import Stats from '~/components/widgets/Stats.astro';
+import CallToAction from '~/components/widgets/CallToAction.astro';
+import HeroWide from '~/components/widgets/HeroWide.astro';
+import NextOfficeHours from '~/components/widgets/NextOfficeHours.astro';
+
+const metadata = {
+  title: 'National Research Platform (NRP)',
+  ignoreTitleTemplate: true,
+};
+
+const homepageAnnouncements = [
+  {
+    id: 'training-recordings',
+    category: 'Training',
+    title: 'NRP Training Recordings',
+    tagline: 'Catch up on Docker, Kubernetes, JupyterHub and more from recent sessions.',
+    ctaLabel: 'Watch Now',
+    ctaUrl: '/training',
+  },
+  {
+    id: 'office-hours',
+    category: 'Office Hours',
+    title: 'Bi-Weekly Office Hours',
+    tagline: 'Get hands-on help from the NRP team to unblock your research workloads.',
+    dateLocation: 'Next: …',
+    ctaLabel: 'Join Meeting',
+    ctaUrl: 'https://ucsd.zoom.us/j/96377381436',
+  },
+  {
+    id: 'lightscope',
+    category: 'Program',
+    title: 'LightScope — Network Telescopes',
+    tagline: 'Hardware contributors: opt-in to forward closed ports to distributed honeypots.',
+    ctaLabel: 'Learn More',
+    ctaUrl: '/lightscope',
+  },
+];
+---
+
+<Layout metadata={metadata} id="front-page">
+  <!-- Hero Widget ******************* -->
+  <!-- image={{ src: '~/assets/images/NRP_globe.jpg', alt: 'NRP Globe image' }} -->
+  <!-- bg="<img src='/src/assets/images/NRP_globe.jpg' alt='NRP Background image' class='brightness-50 object-cover object-center w-full h-full' />" -->
+  <Hero
+    actions={[
+      { text: 'Learn more', href: '#features', variant: 'primary' },
+    ]}
+    
+    
+    whiteText={true}
+    bgImage={{ src: '~/assets/images/NRP_globe.jpg', alt: 'NRP Globe image' }}
+  >
+
+    <Fragment slot="title">
+      The National Research Platform (NRP): Accelerating Research and Education
+    </Fragment>
+
+    <Fragment slot="subtitle">
+      The NRP is a community-owned research and education platform connecting
+      researchers and educators to foster collaboration, accelerate innovation,
+      and share resources. Supported by over 50 institutions, including
+      leadership from UC San Diego, the University of Nebraska-Lincoln, and
+      the Massachusetts Green High Performance Computing Center, the NRP
+      provides access to cutting-edge technologies in AI, high-performance
+      computing, data storage, and networking. Open to all nonprofit higher
+      education institutions, from community colleges to top research universities,
+      the NRP advances learning and scientific breakthroughs with support from the
+      U.S. National Science Foundation, Department of Energy, and Department of Defense among others.
+    </Fragment>
+
+    <Fragment slot="alert">
+      <AnnouncementBar
+        announcements={homepageAnnouncements}
+        autoRotate={true}
+        intervalMs={7000}
+        dismissKey="nrp:home-announcement-bar-dismissed"
+      />
+    </Fragment>
+
+  </Hero>
+
+  <!-- NextOfficeHours script must run on homepage to fill announcement bar date -->
+  <div class="sr-only" aria-hidden="true">
+    <NextOfficeHours />
+  </div>
+
+  <!-- Note Widget ******************* -->
+
+  <Note />
+
+  <!-- Recent Event Widget *********** -->
+  <section class="not-prose bg-white py-10 dark:bg-slate-900">
+    <div class="mx-auto grid max-w-6xl items-center gap-8 px-4 sm:px-6 lg:grid-cols-[0.95fr_1.05fr]">
+      <a href="/7nrp-workshop/" class="block overflow-hidden rounded-md bg-gray-100 shadow-md dark:bg-slate-800">
+        <Image
+          src="~/assets/images/posts/7nrp-overlap.png"
+          alt="Seventh National Research Platform workshop at UC San Diego"
+          class="h-full w-full object-cover"
+          widths={[400, 768, 1024]}
+          sizes="(max-width: 1023px) 100vw, 520px"
+          width={768}
+          aspectRatio="16:9"
+          layout="cover"
+        />
+      </a>
+      <div>
+        <p class="mb-3 text-sm font-semibold uppercase tracking-wide text-primary dark:text-blue-300">Recent event</p>
+        <h2 class="font-heading text-3xl font-bold leading-tight text-gray-900 dark:text-white md:text-4xl">
+          7NRP workshop media is now available
+        </h2>
+        <p class="mt-4 text-lg text-muted dark:text-slate-300">
+          Browse the agenda, slides, tutorial materials, and session recordings from the Seventh National Research
+          Platform workshop at UC San Diego.
+        </p>
+        <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+          <a class="btn btn-primary w-full sm:w-auto" href="/7nrp-workshop/">View workshop media</a>
+          <a
+            class="btn btn-secondary w-full sm:w-auto"
+            href="https://www.youtube.com/playlist?list=PL3p1Zps9-ohCwhU6Ddapq-V8k68TGFkAA"
+          >
+            Watch playlist
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Feed Widget -->
+  <section class="py-8 bg-gray-50 dark:bg-gray-800/50">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+            <span class="relative flex h-3 w-3">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+            </span>
+            Latest NRP Cluster News
+          </h2>
+          <a href="/live" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+            View All →
+          </a>
+        </div>
+        <MatrixFeed />
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-3 text-center">
+          This news is pulled from Nautilus Support. Make sure you're on Nautilus Support for real-time updates.
+          <a href="https://nrp.ai/contact/" class="text-blue-600 underline hover:text-blue-700">Join here</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Widget *************** -->
+
+  <Features
+    id="features"
+    tagline="Features"
+    title="Accelerating Science and Education"
+    items={[
+      {
+        title: 'Artificial Intelligence',
+        description:
+          'The National Research Platform supports research, education, classes, and workshops, offering modern GPUs, FPGAs, and specialized hardware for advanced AI projects.',
+        icon: 'tabler:ai',
+        callToAction: {
+          text: 'Learn more',
+          href: '/documentation/userdocs/ai/llm-managed',
+        },
+      },
+      {
+        title: 'Resources for Classroom',
+        description:
+          'The NRP provides resources for educators to use in their classrooms, including GPUs, CPUs, and storage accessible through convenient interfaces like JupyterHub and Coder.',
+        icon: 'tabler:school',
+        callToAction: {
+          text: 'Learn more',
+          href: '/education',
+        },
+      },
+      {
+        title: 'Network Experiments',
+        description:
+          'The NRP nodes are distributed around the world and allow experiments that are impossible on other clusters.',
+        icon: 'tabler:network',
+        callToAction: {
+          text: 'Learn more',
+          href: 'https://perfsonar.nrp-nautilus.io/maddash-webui/',
+        },
+      },
+      {
+        title: 'Large Data Pools',
+        description:
+          'Mount your data across the world and use it in your experiments.',
+        icon: 'tabler:server-2',
+        callToAction: {
+          text: 'Learn how to use storage on the NRP',
+          href: '/documentation/userdocs/storage/intro',
+        },
+      },
+    ]}
+  />
+  <!--     items={[
+      {
+        title: 'Distributed Sites',
+        description: 'The NRP is composed of over 70 sites across the USA and world, connected with high speed networks to provide a seamless experience to users.',
+        icon: 'tabler:wand'
+      },
+      {
+        title: 'Fault Tolerant',
+        description: 'With sites distributed across the world, the NRP is resilient to failures in any one location, ensuring continuous availability and reliability for users.',
+        icon: 'tabler:shield-check'
+      },
+
+    ]} -->
+  
+  <!-- Map of NRP Sites -->
+  <HeroWide
+    title="Distributed Infrastructure"
+    subtitle="A global network of research resources — shared compute, data, and services."
+    tagline='Global Reach'
+    actions={[{ text: 'Learn more', href: '/distributed-infrastructure', variant: 'primary' }]}
+    >
+    <Fragment slot="image">
+      <iframe 
+        src="https://dash.nrp-nautilus.io/map"
+        title="NRP Sites Map"
+        width="100%"
+        height="500"
+        style="border:0;"
+        loading="lazy"
+        allowfullscreen
+      ></iframe>
+    </Fragment>
+    <Fragment slot="bg">
+      <div class="absolute inset-0 bg-blue-50 dark:bg-transparent"></div>
+    </Fragment>
+
+  </HeroWide>
+
+  <!-- HighlightedPosts Widget ******* -->
+
+  <BlogLatestPosts
+    title="Find out more content in our Blog"
+    information={`Our blog describes the recent events happening in NRP and all collaborating projects.`}
+  />
+
+  <!-- FAQs Widget ******************* -->
+
+  <FAQs
+    title="Frequently Asked Questions"
+    subtitle="Dive into the following questions to gain insights into what NRP can provide to you."
+    tagline="FAQs"
+    classes={{ container: 'max-w-6xl' }}
+    items={[
+      {
+        title: 'Why NRP?',
+        description:
+          "We are the open community of scientists that together make it possible to collaborate free of limitations. We make cutting edge technologies available to anybody in the scientific community.",
+      },
+      {
+        title: 'How much does it cost?',
+        description:
+          'We are funded by the U.S. National Science Foundation to provide free access to non-profit research and education institutions.',
+      },
+      {
+        title: 'Does my project fit here?',
+        description:
+          "As long as your work is related to a scientific project or educational use in the U.S., you can use our infrastructure.",
+      },
+      {
+        title: "What if I'm not fluent with kubernetes?",
+        description:
+          "We provide hosted JupyterHub, Coder and other high level services that require no knowledge of kubernetes. You can also participate in our tutorials to learn more.",
+      },
+      {
+        title: "How can I help the project?",
+        description:
+          "We gladly accept donations in the form of hardware that you can join to our cluster. You can also help by spreading the word about the NRP.",
+      },
+      {
+        title: "What will I gain if I join hardware?",
+        description:
+          "You will get priority in computing on your hardware whenever you'd like. When your hardware is not used by your group, we will provide opportunistic access to it to other NRP users.",
+      },
+      {
+        title: "Do I need to manage the hardware I join to the cluster?",
+        description:
+          "We will install the OS, configure the node and do upgrades ourselves (we'll need IPMI access to install the OS). We might ask you to reboot the node or swap a hard drive if needed.",
+      },
+    ]}
+  />
+
+  <!-- Stats Widget ****************** -->
+
+  <Stats
+    stats={[
+      { title: 'Nodes', amount: '400+' },
+      { title: 'Locations', amount: '70+' },
+      { title: 'Continents', amount: '3' },
+      { title: 'Users', amount: '5K+' },
+    ]}
+  />
+
+  <!-- CallToAction Widget *********** -->
+
+  <CallToAction
+    actions={[
+      {
+        variant: 'primary',
+        text: 'Join us',
+        href: '/documentation/userdocs/start/getting-started/',
+        icon: 'tabler:comet',
+      },
+      {
+        variant: 'secondary',
+        text: 'Donate hardware',
+        href: '/documentation/admindocs/participating/new-contributor-guide/',
+        icon: 'tabler:server',
+      },
+    ]}
+  >
+    <Fragment slot="title">
+      NRP + Nautilus
+    </Fragment>
+
+    <Fragment slot="subtitle">
+      Join the cluster today and start your scientific journey with us.
+    </Fragment>
+  </CallToAction>
+</Layout>
