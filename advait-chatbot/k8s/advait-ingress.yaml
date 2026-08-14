@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: chatbot
+  namespace: rehs-2026-chatbot
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+
+spec:
+  ingressClassName: haproxy
+
+  tls:
+  - hosts:
+    - advait-rehs-chatbot.nrp-nautilus.io
+    secretName: rehs-chatbot-tls
+
+  rules:
+  - host: advait-rehs-chatbot.nrp-nautilus.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: chatbot
+            port:
+              number: 80

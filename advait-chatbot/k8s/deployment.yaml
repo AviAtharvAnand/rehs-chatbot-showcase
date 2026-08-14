@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chatbot
+  namespace: rehs-2026-chatbot
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: chatbot
+
+  template:
+    metadata:
+      labels:
+        app: chatbot
+
+    spec:
+      containers:
+      - name: streamlit
+        image: ghcr.io/advaitc31/rehs-chatbot:v0.4
+        ports:
+        - containerPort: 8501
+
+        envFrom:
+        - configMapRef:
+            name: chatbot-config
+
+        - secretRef:
+            name: chatbot-llm-token
+
+        volumeMounts:
+        - name: chroma
+          mountPath: /app/chroma_db
+
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: 2
+            memory: 4Gi
+
+      volumes:
+      - name: chroma
+        persistentVolumeClaim:
+          claimName: chroma-data
