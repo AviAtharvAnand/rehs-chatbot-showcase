@@ -79,7 +79,13 @@ class Bot:
 
     @property
     def highlights(self) -> list[str]:
-        return [str(h) for h in (self.data.get("highlights") or [])]
+        raw = self.data.get("highlights")
+        if raw is None:
+            return []
+        # A string (a single paragraph) counts as one entry, not one letter.
+        if isinstance(raw, str):
+            return [raw] if raw.strip() else []
+        return [str(h) for h in raw if isinstance(h, str) and h.strip()]
 
     @property
     def eval(self) -> dict | None:
@@ -87,6 +93,24 @@ class Bot:
         return ev if isinstance(ev, dict) else None
 
     # -- the folder's own contents -------------------------------------------
+
+    @property
+    def ignore_paths(self) -> list[str]:
+        """Vendored trees that aren't the student's own work. Anything listed here
+        (relative to this folder) is skipped by the secret scan and the src/ file
+        list — typically a copied upstream docs repo that happens to contain example
+        keys or tokens."""
+        raw = self.data.get("ignore_paths")
+        if not isinstance(raw, list):
+            return []
+        return [str(p).strip("/") for p in raw if isinstance(p, str) and p.strip()]
+
+    def _ignored(self, rel: str) -> bool:
+        return any(
+            rel == ig or rel.startswith(ig + "/")
+            for ig in self.ignore_paths
+            if ig != "/"
+        )
 
     @property
     def k8s_files(self) -> list[Path]:
@@ -105,7 +129,10 @@ class Bot:
         return sorted(
             p
             for p in src.rglob("*")
-            if p.is_file() and not p.name.startswith(".") and "__pycache__" not in p.parts
+            if p.is_file()
+            and not p.name.startswith(".")
+            and "__pycache__" not in p.parts
+            and not self._ignored(p.relative_to(self.path).as_posix())
         )
 
     @property

@@ -21,7 +21,6 @@ workloads on Nautilus, the NRP cluster.
 
 ```
 rehs-chatbot-showcase/
-├── example-chatbot/      a complete example
 ├── <student-chatbot>/    one student, one folder
 │   ├── bot.yaml              who built it and what it does
 │   ├── README.md             the story, in their words
@@ -29,7 +28,7 @@ rehs-chatbot-showcase/
 │   ├── src/                  the code they wrote
 │   └── k8s/                  the Kubernetes manifests they applied
 │
-└── _pages/               the machinery that turns those folders into the website
+└── _pages/               the machinery: template for new entries, scripts, site templates
 ```
 
 From each folder the site generates a page for the chatbot and a page for each student
@@ -62,7 +61,9 @@ To turn the site on: **Settings -> Pages -> Source: GitHub Actions**.
 
 - **No secrets, ever.** No tokens, no `.env`, no `Secret` manifests, nothing sensitive in
   a screenshot. The automated check fails the pull request if it finds any. NRP tokens
-  can be rotated at https://nrp.ai/llmtoken.
+  can be rotated at https://nrp.ai/llmtoken. If you vendored an upstream docs repo into
+  `src/` that ships example keys, list it under `ignore_paths:` in `bot.yaml` so the
+  check skips it — the exclusion is for third-party docs only, never your own tokens.
 - **Credit is per person.** Every entry lists who built it and what each person did.
 
 ## Credits

@@ -1,9 +1,9 @@
 # Your entry in the showcase. Everything on your public pages comes from this file.
-# Field reference: ../docs/ENTRY-FORMAT.md      A finished one: ../../example-chatbot/
-# Check your work:  make check
+# This template is the reference: copy it and fill in your own answers.
+# Field reference: ../_pages/README.md      Check your work:  make check
 
 name: Your Chatbot Name
-# One sentence, no jargon. Someone who's never heard of NRP should get it.
+# One plain sentence, no jargon. Someone who's never heard of NRP should get it.
 tagline: What your chatbot does, in one plain sentence.
 
 kind: solo            # solo | pair | team
@@ -25,10 +25,16 @@ tech:
   - Kubernetes
   - Python
 
-# 2-5 bullets. The interesting DECISIONS, not a feature list.
+# 2-5 bullets (or a short paragraph) on the interesting DECISIONS, not a feature list.
 highlights:
   - Something you did differently, and what it bought you.
   - A problem you hit and how you solved it.
+
+# Optional: any paths you don't want scanned for secrets or listed as your own code.
+# Use this if you vendored an upstream docs tree into src/ (example keys and tokens
+# in third-party docs are expected, and this keeps the check from crying wolf).
+# ignore_paths:
+#   - src/documentation
 
 # Only if you measured it. Report what you actually got.
 # eval:

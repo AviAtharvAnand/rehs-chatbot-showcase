@@ -78,7 +78,7 @@ class Checker:
             if value is None:
                 self.error(
                     f"'{field_name}' is missing from bot.yaml",
-                    "Copy the shape from example-chatbot/bot.yaml.",
+                    "Copy the shape from _pages/template/bot.yaml.",
                 )
             elif not isinstance(value, kind) or (kind is str and not str(value).strip()):
                 self.error(
@@ -93,7 +93,7 @@ class Checker:
         tagline = str(data.get("tagline", "")).strip()
         if tagline:
             if len(tagline) > 120:
-                self.error(
+                self.warn(
                     f"'tagline' is {len(tagline)} characters, keep it under 120.",
                     "It has to fit on a card and in a link preview.",
                 )
@@ -152,7 +152,7 @@ class Checker:
                     "Name what you owned: 'retrieval + eval harness'.",
                 )
             if len(role) > 120:
-                self.error(f"{at}: 'role' is over 120 characters, tighten it.")
+                self.warn(f"{at}: 'role' is over 120 characters, tighten it.")
 
             learned = str(author.get("learned", "")).strip()
             if not learned:
@@ -193,17 +193,31 @@ class Checker:
             self.error(f"'tech' has {len(tech)} entries, 12 is the maximum.")
 
         highlights = self.bot.data.get("highlights")
-        if not isinstance(highlights, list) or not highlights:
+        if highlights is None:
             self.error(
                 "'highlights' is missing",
                 "2-5 bullets on what makes YOUR bot yours. Decisions, not features.",
             )
+        elif isinstance(highlights, list):
+            if not highlights:
+                self.error(
+                    "'highlights' is empty",
+                    "2-5 bullets on what makes YOUR bot yours. Decisions, not features.",
+                )
+            else:
+                if len(highlights) > 6:
+                    self.error(f"'highlights' has {len(highlights)} bullets, 6 is the maximum.")
+                for i, h in enumerate(highlights, start=1):
+                    if len(str(h)) > 240:
+                        self.error(f"highlights[{i}] is over 240 characters, split or trim it.")
         else:
-            if len(highlights) > 6:
-                self.error(f"'highlights' has {len(highlights)} bullets, 6 is the maximum.")
-            for i, h in enumerate(highlights, start=1):
-                if len(str(h)) > 240:
-                    self.error(f"highlights[{i}] is over 240 characters, split or trim it.")
+            # A single block of prose is fine too — don't block a student for not
+            # reaching for markdown bullets.
+            if not str(highlights).strip():
+                self.error(
+                    "'highlights' is empty",
+                    "2-5 bullets on what makes YOUR bot yours. Decisions, not features.",
+                )
 
         readme = self.bot.path / "README.md"
         if not readme.exists():
@@ -224,7 +238,7 @@ class Checker:
         if ev is None:
             return
         if not isinstance(ev, dict):
-            self.error("'eval' should be a block of numbers, see example-chatbot/bot.yaml.")
+            self.error("'eval' should be a block of numbers, see _pages/template/bot.yaml.")
             return
         total = ev.get("total")
         if not isinstance(total, int) or total <= 0:
@@ -329,17 +343,21 @@ class Checker:
             )
 
     def check_secrets(self) -> None:
-        """Scan every text file in the folder, src/ and k8s/ are where tokens hide."""
+        """Scan every text file in the folder, src/ and k8s/ are where tokens hide.
+        Paths listed in the entry's `ignore_paths` are skipped: vendored docs repos
+        legitimately contain example keys, and scanning them only cries wolf."""
         for path in sorted(self.bot.path.rglob("*")):
             if not path.is_file() or path.suffix.lower() in SKIP_SCAN_SUFFIXES:
                 continue
             if path.stat().st_size > 2_000_000:
                 continue
+            rel = path.relative_to(self.bot.path).as_posix()
+            if self.bot._ignored(rel):
+                continue
             text = path.read_text(encoding="utf-8", errors="replace")
-            where = path.relative_to(self.bot.path).as_posix()
             for pattern, description in SECRET_PATTERNS:
                 if pattern.search(text):
-                    self.error(f"{where} contains what looks like {description}", ROTATE_HINT)
+                    self.error(f"{rel} contains what looks like {description}", ROTATE_HINT)
                     break
         env = self.bot.path / ".env"
         if env.exists():

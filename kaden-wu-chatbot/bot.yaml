@@ -11,7 +11,18 @@ authors:
     learned: >
       I learned about how to use RAG to enhance a chatbot's responses. I also learned how to use kubectl to manage a Kubernetes system.
 
-tech: [Streamlit, ChromaDB, NRP LLMs (gemma, gpt-oss, qwen3, Kubernetes, Python]
+tech:
+  - Streamlit
+  - ChromaDB
+  - NRP LLMs (gemma, gpt-oss, qwen3)
+  - Kubernetes
+  - Python
+
+# src/documentation/ is the upstream NRP docs site the bot ingests. It's vendored
+# third-party content (with example keys that aren't real), so the secret scan and
+# the file listing skip it.
+ignore_paths:
+  - src/documentation
 
 highlights:
   I made some personalized settings for my chatbot in order to make the UI more appealing. It was also very nice to see the chatbot finally come together. One problem that I encountered was debugging my code and mkaking sure that everything worked correctly, but I looked at the traceback calls and carefully stepped throgh my code in order to resolve these issues.  

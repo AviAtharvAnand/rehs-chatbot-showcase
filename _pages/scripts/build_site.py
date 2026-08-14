@@ -201,7 +201,10 @@ def build(base_url: str, repo_url: str = DEFAULT_REPO_URL) -> int:
             ),
         )
         # People type handles in any case; keep a lowercase alias when it differs.
-        if student["handle"] != key:
+        # Only when the key differs by more than case: on a case-insensitive
+        # filesystem the two paths are the same, and the alias would clobber
+        # the real page with a redirect to itself.
+        if student["handle"].lower() != key:
             write(
                 SITE_DIR / "students" / key / "index.html",
                 f'<meta http-equiv="refresh" content="0; '
