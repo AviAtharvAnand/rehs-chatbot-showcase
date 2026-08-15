@@ -41,4 +41,5 @@ The pattern matters more than the overall percentage. Simple factual questions w
 * **Improve multi-part retrieval:** split complicated questions into separate searches, retrieve evidence for each part, and combine the evidence before generating the answer.
 * **Make evaluation automatic:** build a larger benchmark that runs after every retrieval or prompt change and reports accuracy by question type, instead of testing changes manually.
 * **Improve source grounding:** connect individual claims in the answer directly to the specific document chunk that supports them, so citations show not just which sources were retrieved but exactly which source supports each statement.
-M
+
+<p align="right"><sub><sup>README was created with help of ChatGPT</sup></sub></p>
