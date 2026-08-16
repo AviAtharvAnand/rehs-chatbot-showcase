@@ -1,0 +1,21 @@
+name: Mohammad's's NRP Chatbot
+tagline: Answers questions about NRP with a real answer and a link to the doc it came from.
+
+kind: solo
+year: 2026
+
+authors:
+  - name: Your Name
+    github: your-github-username
+    role: what you actually built, be specific
+    learned: >
+      Two or three honest sentences about what this summer taught you.
+      The un-polished version is the good version.
+
+tech: [Streamlit, ChromaDB, NRP LLM (gpt-oss), Kubernetes, Python]
+
+highlights:
+  - Something you did differently, and what it got you.
+  - A problem you hit and how you solved it.
+
+screenshot: screenshot.png
